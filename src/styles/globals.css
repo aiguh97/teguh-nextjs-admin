@@ -1,0 +1,238 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-color: rgb(94, 92, 127);
+  --background-color: rgb(248, 247, 253);
+  --container-color: rgb(255, 255, 255);
+  --primary-color: rgb(255, 127, 101);
+  --primary-bg: #ff985c4d;
+  --title-color: rgb(53, 50, 82);
+  --text-color: rgb(94, 92, 127);
+  --text-secondary: rgb(133, 131, 165);
+  --stroke-color: #e7e7e7;
+  --dots: url('../assets/dots-light.svg');
+}
+
+.dark {
+  --foreground-color: rgb(159, 159, 159);
+  --background-color: rgb(34, 40, 49);
+  --container-color: rgb(49, 54, 63);
+  --primary-color: rgb(255, 159, 140);
+  --title-color: rgb(228, 230, 235);
+  --text-color: rgb(163, 163, 163);
+  --text-secondary: rgb(121, 121, 121);
+  --stroke-color: rgb(62, 68, 78);
+  --dots: url('../assets/dots-dark.svg');
+
+}
+
+body {
+  color: var(--foreground-color);
+  background: var(--background-color);
+
+}
+
+html {
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  letter-spacing: .3px;
+}
+
+@layer utilities {
+  .toggle {
+    @apply top-5 rounded-lg fixed cursor-pointer h-10 w-fit px-3 bg-container text-text border border-stroke flex justify-center items-center z-10 transition-all duration-300 ease-in-out;
+  }
+
+  .transition-3s {
+    @apply transition-all duration-300 ease-in-out
+  }
+
+  .card {
+    @apply px-4 py-3 rounded-xl bg-container border border-stroke transition-3s
+  }
+
+  .btn {
+    @apply px-5 py-3 leading-4 rounded-md shadow-sm border border-[#febe82] dark:border-[#ff77134c] bg-[#ffbcaa61] dark:bg-[#f7b8a4] text-[#ff784f] dark:text-[#e04848] flex gap-2 items-center font-normal w-fit hover:border-primary transition-3s
+  }
+  .btn {
+    @apply px-3 py-2 leading-4 justify-center rounded-md shadow-sm bg-[#ff985c4d] border border-[#ffa04666] text-primary flex gap-1 items-center font-normal text-sm w-fit hover:border-primary transition-3s
+  }
+  .action-btn{
+    @apply px-2 py-1 flex items-center rounded-[5px] border text-base transition-3s hover:text-white 
+  }
+  .action-btn-danger{
+    @apply  bg-opacity-50 bg-red-500 hover:bg-red-500 text-red-500 dark:text-red-200  border-red-400 
+  }
+  .action-btn-warning{
+    @apply  bg-opacity-50 bg-orange-400 hover:bg-orange-400 text-orange-500 dark:text-orange-200  border-orange-400 
+  }
+  .action-btn-primary{
+    @apply  bg-opacity-50 bg-green-500 hover:bg-green-500 text-green-500 dark:text-green-200  border-green-400 
+  }
+
+  .hr {
+    @apply border-stroke my-5;
+  }
+
+  .dots {
+    @apply before:content-[''] before:absolute before:bg-dots before:h-9 before:w-9 before:-left-3 before:-top-3 before:-z-[1]
+  }
+
+  .form-input {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+  }
+
+  .form-label {
+    @apply text-sm font-medium text-gray-900 dark:text-white;
+  }
+
+  .form-control {
+    @apply mb-4;
+  }
+
+  .badge {
+    @apply flex gap-2 whitespace-nowrap items-center py-2 px-3 border border-stroke rounded-md bg-container text-text
+  }
+
+/* Override class */
+.css-13cymwt-control{
+  @apply !bg-gray-50 !dark:bg-gray-700
+}
+
+.my-react-select-container .my-react-select__control {
+  @apply bg-[#f9fafb] dark:bg-[#374151] border-2 border-neutral-300 dark:border-[#4b5563] hover:border-teal-400 dark:hover:border-teal-400 rounded-lg;
+}
+
+.my-react-select-container .my-react-select__control--is-focused {
+  @apply border-teal-500 hover:border-teal-500 dark:border-blue-400 dark:hover:border-teal-400 shadow-none;
+}
+
+.my-react-select-container .my-react-select__menu {
+  @apply bg-neutral-100 dark:bg-[#374151] border-2 border-neutral-300 dark:border-neutral-600;
+}
+
+.my-react-select-container .my-react-select__option {
+  @apply text-neutral-600 dark:text-neutral-200 bg-neutral-100 hover:bg-neutral-200 dark:bg-[#374151] dark:hover:bg-neutral-800;
+}
+/* .my-react-select-container .my-react-select__option--is-focused {
+  @apply bg-neutral-200 dark:bg-neutral-800;
+} */
+.my-react-select-container .my-react-select__multi-value{
+  @apply !rounded-md bg-white dark:bg-slate-300 border border-stroke my-[7px]
+}
+.my-react-select-container .my-react-select__indicator-separator {
+  @apply bg-neutral-400;
+}
+
+.my-react-select-container .my-react-select__input-container,
+.my-react-select-container .my-react-select__placeholder,
+.my-react-select-container .my-react-select__single-value {
+  @apply text-neutral-600 dark:text-neutral-200;
+}
+}
+/* React Markdown Editor */
+.code-highlight, .w-md-editor-area, .w-md-editor-preview {
+  scrollbar-color: var(--text-secondary) transparent;
+  scrollbar-width: thin;
+}
+.w-md-editor-content{
+  background-color: #f9fafb;
+}
+.dark .w-md-editor-content{
+  background-color: rgb(55 65 81) !important;
+}
+.w-md-editor-toolbar{
+  background-color: rgb(31 41 55) !important;
+  color: rgb(236, 236, 236);
+  padding: .5rem !important;
+}
+.dark .w-md-editor-toolbar{
+  background-color: #4b5563 !important;
+  color: white;
+}
+.dark .w-md-editor-toolbar-divider{
+  background-color: #9e9e9e !important;
+}
+.w-md-editor-toolbar li > button{
+  color: rgb(203, 203, 203) !important;
+}
+.w-md-editor-toolbar svg{
+  width: 1rem;
+  height: 1rem;
+}
+.w-md-editor-text{
+  height: 100% !important;
+}
+.w-md-editor-preview{
+  padding: 0 !important;
+  display: block;
+}
+.wmde-markdown{
+  padding: 1rem;
+  border-radius: 0 !important;
+  border: 1px solid var(--stroke-color);
+  border-radius: .5rem !important;
+}
+.dark .wmde-markdown{
+  background-color: var(--background-color) !important;
+}
+/* ============================ */
+
+/* React Select */
+/* .css-13cymwt-control, .css-t3ipsp-control{
+  padding: 2px !important;
+  border-radius: .5rem !important;
+  box-shadow: none !important;
+  border-color: #d3d7dc !important;
+}
+
+.css-13cymwt-control, .css-t3ipsp-control, .css-1nmdiq5-{
+  background-color: #f9fafb !important;
+  border-color: #d3d7dc !important;
+}
+.dark .css-13cymwt-control, .dark .css-t3ipsp-control, .dark .css-1nmdiq5-{
+  border-color: rgb(75 85 99) !important;
+  background-color: #374151  !important;
+}
+.css-1p3m7a8-multiValue{
+  background-color: var(--primary-bg) !important;
+  color: var(--primary-color) !important;
+  border-radius: .25rem !important;
+  border: 1px solid var(--primary-color);
+}
+.css-wsp0cs-MultiValueGeneric{
+  color: rgb(255, 102, 0) !important;
+}
+.css-3w2yfm-ValueContainer{
+  padding: 4px !important;
+  gap: .2rem;
+}
+
+.dark .css-1dimb5e-singleValue{
+  color: white;
+}
+.css-qbdosj-Input input{
+  box-shadow: none !important;
+} */
+
+#nprogress .bar {
+  background: var(--primary-color) !important;
+  height: 3px !important;
+  position: fixed !important;
+  z-index: 9999999 !important;
+}
+
+#nprogress .bar {
+  position: fixed !important;
+}
+#nprogress .peg {
+  box-shadow: none !important;
+}
+
+.btn:hover i {
+  transform: rotate(-10deg);
+  transition: all .3s;
+}

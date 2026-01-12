@@ -1,0 +1,18 @@
+<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Background -->
+  <rect width="256" height="256" rx="32" fill="#FF7F65"></rect>
+
+  <!-- Letter T -->
+  <!-- Top bar -->
+  <rect x="48" y="48" width="160" height="24" rx="8" fill="white"></rect>
+  <!-- Vertical stem -->
+  <rect x="116" y="48" width="24" height="96" rx="8" fill="white"></rect>
+
+  <!-- Letter H -->
+  <!-- Left vertical -->
+  <rect x="64" y="136" width="24" height="72" rx="8" fill="white"></rect>
+  <!-- Right vertical -->
+  <rect x="168" y="136" width="24" height="72" rx="8" fill="white"></rect>
+  <!-- Middle bar -->
+  <rect x="64" y="168" width="128" height="24" rx="8" fill="white"></rect>
+</svg>
