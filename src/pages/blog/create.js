@@ -9,7 +9,7 @@ import React from "react";
 const create = () => {
   return (
     <>
-      <NextSeo title='Skillset - Dwi Wijaya' />
+      <NextSeo title='Skillset - Teguh Muhammad Harits' />
       <Container>
         <PageHeading title="Create Blog" />
         <CreateBlog />

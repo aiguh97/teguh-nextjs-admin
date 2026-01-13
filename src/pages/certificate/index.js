@@ -12,7 +12,7 @@ const index = ({fallback}) => {
 
   return (
     <SWRConfig value={{ fallback }}>
-      <NextSeo title='Certificate - Dwi Wijaya' />
+      <NextSeo title='Certificate - Teguh Muhammad Harits' />
 
       <Container>
         <PageHeading title="Certificate">

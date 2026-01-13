@@ -12,7 +12,7 @@ const index = ({ data }) => {
 
   return (
     <>
-      <NextSeo title='Portfolio - Dwi Wijaya' />
+      <NextSeo title='Portfolio - Teguh Muhammad Harits' />
       <Container>
         <PageHeading title="Portfolio">
           <Link className='btn !px-2 !py-0' href="/portfolio/create"><i className='text-xl bx bx-list-plus'></i> Create</Link>

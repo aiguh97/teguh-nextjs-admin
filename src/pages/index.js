@@ -11,7 +11,7 @@ export default function Home({ initialData }) {
   const user = useUser();
   return (
     <>
-      <NextSeo title='Dashboard - Dwi Wijaya' />
+      <NextSeo title='Dashboard - Teguh Muhammad Harits' />
       <Container>
         <Dashboard initialData={initialData} />
       </Container>

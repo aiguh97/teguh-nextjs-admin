@@ -5,7 +5,7 @@ import { NextSeo } from "next-seo"
 const SignIn = () => {
     return (
         <>
-            <NextSeo title='Sign in - Dwi Wijaya' />
+            <NextSeo title='Sign in - Teguh Muhammad Harits' />
             <main>
                 <LoginForm />
             </main>

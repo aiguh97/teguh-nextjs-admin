@@ -112,7 +112,7 @@ const Sidebar = ({ className, lastUpdate }) => {
                     </nav>
                 </div>
                 <div className="nav__footer text-left pl-6">
-                    <span className="text-subtext text-sm transform rotate-180 ">&copy; {new Date().getFullYear()} Dwi Wijaya</span>
+                    <span className="text-subtext text-sm transform rotate-180 ">&copy; {new Date().getFullYear()} Teguh Muhammad Harits</span>
                 </div>
                 <div onClick={() => setToggle(!toggle)} className={`toggle lg:-left-64 left-5 sidebar__toggle ${toggle ? '!left-[17rem]' : ''}`}>
                     <i className="fa-duotone fa-bars text-primary"></i>

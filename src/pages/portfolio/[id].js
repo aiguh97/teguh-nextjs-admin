@@ -15,7 +15,6 @@ const view = ({ data }) => {
         <PageHeading title="View Portfolio">
         </PageHeading>
         {JSON.stringify(data)}
-        <div>sdad</div>
         <DetailPortfolio data={data} />
       </Container>
     </>

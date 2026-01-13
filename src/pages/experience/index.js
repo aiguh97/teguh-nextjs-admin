@@ -12,7 +12,7 @@ import { SWRConfig } from 'swr'
 const index = ({fallback}) => {
   return (
     <SWRConfig value={{ fallback }}>
-      <NextSeo title='Experience - Dwi Wijaya' />
+      <NextSeo title='Experience - Teguh Muhammad Harits' />
       <Container>
         <PageHeading title="Experience">
           <Link className={`btn !px-2 !py-0`} href="/experience/create"><i className='text-xl bx bx-list-plus'></i> Create</Link>

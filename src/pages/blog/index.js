@@ -1,13 +1,14 @@
 import PageHeading from '@/components/common/PageHeading'
 import Container from '@/components/layout/partials/Container'
 import WithProtected from '@/hoc/withProtected'
+import { NextSeo } from 'next-seo'
 import Link from 'next/link'
 import React from 'react'
 
 const index = () => {
   return (
     <>
-      <NextSeo title='Skillset - Dwi Wijaya' />
+      <NextSeo title='Skillset - Teguh Muhammad Harits' />
       <Container>
         <PageHeading title="Blog">
           <Link className='btn !px-2 !py-0' href="/blog/create"><i className='text-xl bx bx-list-plus'></i> Create</Link>

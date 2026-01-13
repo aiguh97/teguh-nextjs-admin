@@ -55,7 +55,7 @@ const LoginForm = () => {
                         </button>
                     </form>
                     <p className="text-center text-gray-500 text-xs">
-                        &copy;2024 Dwi Wijaya. All rights reserved.
+                        &copy;2024 Teguh Muhammad Harits. All rights reserved.
                     </p>
                 </div>
             </div>

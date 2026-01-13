@@ -13,7 +13,7 @@ const index = ({fallback}) => {
   const aboutLength = fallback['/api/about'].length > 0;
   return (
     <SWRConfig value={{ fallback }}>
-      <NextSeo title='About - Dwi Wijaya' />
+      <NextSeo title='About - Teguh Muhammad Harits' />
       <Container>
         <PageHeading title="About">
           <Link className={`btn !px-2 !py-0 ${aboutLength && '!hidden'}`} href="/about/create"><i className='text-xl bx bx-list-plus'></i> Create</Link>
