@@ -8,7 +8,7 @@ import ReactSelect from "react-select";
 
 import Button from "@/components/common/Button";
 import ImageUploadPreview from "@/components/form/ImageUploadPreview";
-import TiptapEditor from "@/components/editor/TiptapEditor";
+import TiptapEditor from "../../editor/TipTapEditor";
 
 import addDocument from "@/services/firebase/crud/addDocument";
 import { updateDocument } from "@/services/firebase/crud/updateDocument";
