@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import { updateDocument } from "@/services/firebase/crud/updateDocument";
 import Button from "@/components/common/Button";
-import { uploadFile } from "@/services/firebase/fileHandler";
 
 const AboutForm = ({ initialData, action }) => {
     const router = useRouter();

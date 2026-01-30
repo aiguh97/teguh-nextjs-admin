@@ -3,7 +3,7 @@ import axios from "axios";
 export const getLastCommitDate = async () => {
     try {
         const response = await axios.get(
-            'https://api.github.com/repos/dwi-wijaya/admin-dwiwijaya.com/commits',
+            'https://api.github.com/repos/aiguh97/teguh-nextjs-admin/commits',
             {
                 headers: {
                     Authorization: `Bearer ${process.env.GITHUB_TOKEN_PERSONAL}`,
