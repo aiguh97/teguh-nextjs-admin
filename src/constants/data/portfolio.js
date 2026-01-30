@@ -1,8 +1,8 @@
 export const PORTFOLIO_CATEGORIES = [
-    { value: "code", label: "Code" },
-    { value: "uiux", label: "UI-UX" },
-    { value: "design", label: "Design" },
-    { value: "other", label: "Other" },
+    { value: "fullstack", label: "Fullstack" },
+    { value: "frontend", label: "Frontend" },
+    { value: "backend", label: "Backeend" },
+    { value: "ai/ml", label: "AI / ML" },
 ];
 export const PORTFOLIO_TYPES = [
     { value: "office", "label": "Office Project" },

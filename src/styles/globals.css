@@ -236,3 +236,44 @@ html {
   transform: rotate(-10deg);
   transition: all .3s;
 }
+
+/* TipTap base */
+.ProseMirror {
+  min-height: 200px;
+  outline: none;
+}
+
+.ProseMirror p {
+  margin: 0.5rem 0;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
+
+.ProseMirror ul {
+  padding-left: 1.5rem;
+  list-style: disc;
+}
+
+.ProseMirror ol {
+  padding-left: 1.5rem;
+  list-style: decimal;
+}
+
+.ProseMirror h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.ProseMirror blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  color: #6b7280;
+}

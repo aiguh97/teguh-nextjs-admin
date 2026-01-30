@@ -1,6 +1,6 @@
 import getCollecction from "@/services/firebase/crud/getCollecction";
 import getDocument from "@/services/firebase/crud/getDocument";
-import { getFile } from "@/services/firebase/fileHandler";
+import { getFile } from "@/services/supabase/fileHandler";
 
 export default async function handler(req, res) {
     try {

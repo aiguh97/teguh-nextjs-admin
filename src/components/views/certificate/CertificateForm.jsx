@@ -1,118 +1,167 @@
 import Button from "@/components/common/Button";
+import ImageUploadPreview from "@/components/form/ImageUploadPreview";
 import addDocument from "@/services/firebase/crud/addDocument";
 import { updateDocument } from "@/services/firebase/crud/updateDocument";
-import { deleteFile, uploadFile } from "@/services/firebase/fileHandler";
-import { Label, TextInput, FileInput } from "flowbite-react";
+import { deleteFile, uploadFile } from "@/services/supabase/fileHandler";
+import { Label, TextInput } from "flowbite-react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import toast from "react-hot-toast";
 import Select from "react-select";
 
-const CertificateForm = ({ initialData, action }) => {
+const CertificateForm = ({ initialData = {}, action }) => {
   const router = useRouter();
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
-  const [Loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    setValue,
+    reset,
+  } = useForm();
+
+  const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
+  /* PREFILL FORM (UPDATE ONLY) */
   useEffect(() => {
-    // prefill form with initialData
-    Object.entries(initialData || {}).forEach(([key, value]) => {
-      setValue(key, value);
-    });
-  }, [initialData, setValue]);
+    if (action === "update" && initialData?.id) {
+      reset(initialData);
 
-  const handleChangeFile = (e) => {
-    const file = e.target.files?.[0];
-    if (file) setImageFile(file);
+      if (initialData.image_url) {
+        setPreview(initialData.image_url);
+      }
+    }
+  }, [initialData, action, reset]);
+
+  /* IMAGE HANDLER */
+  const handleChangeFile = (file) => {
+    if (!file) return;
+    setImageFile(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
+  const handleRemove = () => {
+    setImageFile(null);
+    setPreview(null);
+    setValue("image_url", "");
+    setValue("image_path", "");
   };
 
   const onSubmit = async (data) => {
     try {
       setLoading(true);
 
-      // Handle image upload
+      let payload = {
+        ...data,
+        skill: data.skill?.map((s) => s.value) ?? [], // 🔥 FIX
+      };
+
       if (imageFile) {
-        // If editing and old image exists, delete it
-        if (initialData?.image) await deleteFile(initialData.image);
-        data.image = await uploadFile(imageFile, "certificates/");
-      } else if (initialData?.image) {
-        data.image = initialData.image; // keep existing image
+        if (action === "update" && initialData?.image_path) {
+          await deleteFile(initialData.image_path);
+        }
+
+        const uploaded = await uploadFile(imageFile);
+        payload.image_url = uploaded.url;
+        payload.image_path = uploaded.path;
       } else {
-        data.image = ""; // fallback
+        payload.image_url = initialData?.image_url ?? "";
+        payload.image_path = initialData?.image_path ?? "";
       }
 
-      // Firestore action
-      const { success, error } = action === "create"
-        ? await addDocument("certificate", data)
-        : await updateDocument("certificate", initialData.id, data);
+      const result =
+        action === "create"
+          ? await addDocument("certificate", payload)
+          : await updateDocument("certificate", initialData.id, payload);
 
-      if (success) {
-        toast.success(`Data ${action === "create" ? "created" : "updated"} successfully`);
+      if (result?.success) {
+        toast.success(
+          action === "create"
+            ? "Created successfully"
+            : "Updated successfully"
+        );
         router.push("/certificate");
       } else {
-        toast.error(`Failed to ${action === "create" ? "create" : "update"}`);
-        console.error("Error:", error);
+        toast.error("Failed to save data");
       }
     } catch (err) {
-      console.error("An error occurred:", err);
-      toast.error("Something went wrong!");
+      console.error("CERTIFICATE ERROR:", err);
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
   const skillOptions = [
-    { value: "aa", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
+    { value: "frontend", label: "Frontend" },
+    { value: "backend", label: "Backend" },
+    { value: "uiux", label: "UI/UX" },
   ];
 
   return (
-    <div className="card p-2">
+    <div className="card p-4">
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Name */}
+        {/* IMAGE */}
+        <div className="mb-6">
+          <Label value="Image" />
+          <div className="mt-2">
+            <ImageUploadPreview
+              value={preview}
+              onChange={handleChangeFile}
+              onRemove={handleRemove}
+            />
+          </div>
+        </div>
+
+        {/* NAME */}
         <div className="mb-4">
-          <Label htmlFor="name" value="Name" />
+          <Label value="Name" />
           <TextInput {...register("name", { required: true })} />
-          {errors.name && <span className="text-sm text-red-500">This field is required</span>}
+          {errors.name && <p className="text-sm text-red-500">Required</p>}
         </div>
 
-        {/* Organization */}
+        {/* ORGANIZATION */}
         <div className="mb-4">
-          <Label htmlFor="organization" value="Organization" />
+          <Label value="Organization" />
           <TextInput {...register("organization", { required: true })} />
-          {errors.organization && <span className="text-sm text-red-500">This field is required</span>}
+          {errors.organization && (
+            <p className="text-sm text-red-500">Required</p>
+          )}
         </div>
 
-        {/* Image */}
+        {/* SKILL */}
         <div className="mb-4">
-          <Label htmlFor="image" value="Image" />
-          {initialData?.image && <small>Current: {initialData.image}</small>}
-          <FileInput
-            accept=".png,.jpg,.jpeg,.webp"
-            onChange={handleChangeFile}
+          <Label value="Skill" />
+          <Controller
+            name="skill"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                isMulti
+                options={skillOptions}
+                classNamePrefix="react-select"
+              />
+            )}
           />
-          {errors.image && <span className="text-sm text-red-500">This field is required</span>}
         </div>
 
-        {/* Skill */}
-        <div className="mb-4">
-          <Label htmlFor="skill" value="Skill" />
-          <Select isMulti options={skillOptions} />
-        </div>
-
-        {/* Credential */}
-        <div className="mb-4">
-          <Label htmlFor="credential" value="Credential" />
+        {/* CREDENTIAL */}
+        <div className="mb-6">
+          <Label value="Credential" />
           <TextInput {...register("credential", { required: true })} />
-          {errors.credential && <span className="text-sm text-red-500">This field is required</span>}
+          {errors.credential && (
+            <p className="text-sm text-red-500">Required</p>
+          )}
         </div>
 
-        {/* Submit */}
-        <div className="flex justify-end">
-          <Button isLoading={Loading} type="submit" className="!w-full">Save</Button>
-        </div>
+        <Button isLoading={loading} type="submit" className="w-full">
+          Save
+        </Button>
       </form>
     </div>
   );

@@ -1,6 +1,6 @@
 import firebase_app from "../config";
 import { getFirestore, doc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
-import { getFile } from "../fileHandler";
+// import { getFile } from "../fileHandler";
 
 const db = getFirestore(firebase_app);
 

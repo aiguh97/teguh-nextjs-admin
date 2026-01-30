@@ -84,8 +84,8 @@ const Dashboard = ({ initialData = dummyInitialData }) => {
                         src={theme === 'dark' ? LogoDark : LogoLight}
                         alt="Dwi-logo"
                     />
-                    <Link href="https://dwiwijaya.com" className="font-semibold">
-                        dwiwijaya.com
+                    <Link href="https://teguhdev.com" className="font-semibold">
+                        teguhdev.com
                     </Link>
                 </div>
 

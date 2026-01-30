@@ -1,7 +1,7 @@
 import { supabase } from "./config";
 
 /**
- * Upload image → return PATH (bukan URL)
+ * Upload image → return FULL PUBLIC URL + PATH
  */
 export async function uploadFile(file, folder = "certificates/") {
   const ext = file.name.split(".").pop();
@@ -16,7 +16,14 @@ export async function uploadFile(file, folder = "certificates/") {
 
   if (error) throw error;
 
-  return fileName; // ⬅️ simpan PATH ke database
+  const { data } = supabase.storage
+    .from("images")
+    .getPublicUrl(fileName);
+
+  return {
+    path: fileName,
+    url: data.publicUrl,
+  };
 }
 
 /**
@@ -39,9 +46,24 @@ export function getFile(path) {
   if (!path) return null;
 
   const { data } = supabase.storage
-    .from("images") // ⬅️ PASTIKAN bucket BENAR
+    .from("images")
     .getPublicUrl(path);
 
   return data?.publicUrl ?? null;
 }
 
+
+export async function uploadIconImage(file) {
+  const ext = file.name.split(".").pop();
+  const path = `icons/${Date.now()}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from("images")
+    .upload(path, file, { upsert: true });
+
+  if (error) throw error;
+
+  const { data } = supabase.storage.from("images").getPublicUrl(path);
+
+  return data.publicUrl;
+}

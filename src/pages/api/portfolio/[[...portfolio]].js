@@ -1,6 +1,6 @@
 import firebase_app from "@/services/firebase/config";
+import { getFile } from "@/services/supabase/fileHandler";
 import { getDocs, collection, getFirestore } from "firebase/firestore";
-import { getFile } from "@/services/firebase/fileHandler";
 
 const db = getFirestore(firebase_app);
 
@@ -25,7 +25,6 @@ export default async function handler(req, res) {
         return {
           id: doc.id,
           ...docData,
-          thumbnail: thumbnailURL,
         };
       })
     );

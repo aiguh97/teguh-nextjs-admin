@@ -14,7 +14,6 @@ const view = ({ data }) => {
       <Container>
         <PageHeading title="View Portfolio">
         </PageHeading>
-        {JSON.stringify(data)}
         <DetailPortfolio data={data} />
       </Container>
     </>
@@ -23,6 +22,6 @@ const view = ({ data }) => {
 
 export default view
 export const getServerSideProps = async ({ params }) => {
-  const { result: data } = await getDocument("portfolio", params?.id, true, 'thumbnail')
-  return { props: { data } }
-}
+  const { result: data } = await getDocument("portfolio", params?.id);
+  return { props: { data } };
+};

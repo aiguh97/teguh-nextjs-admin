@@ -1,102 +1,107 @@
 import React, { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import { useForm } from "react-hook-form";
-import { FileInput, Label, TextInput, Textarea, Select } from "flowbite-react";
+import { useForm, Controller } from "react-hook-form";
+import { Label, TextInput, Select } from "flowbite-react";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
+import convert from "url-slug";
+import ReactSelect from "react-select";
+
+import Button from "@/components/common/Button";
+import ImageUploadPreview from "@/components/form/ImageUploadPreview";
+import TiptapEditor from "@/components/editor/TiptapEditor";
+
 import addDocument from "@/services/firebase/crud/addDocument";
 import { updateDocument } from "@/services/firebase/crud/updateDocument";
-import { deleteFile, uploadFile } from "@/services/supabase/fileHandler";
-import toast from "react-hot-toast";
-import Button from "@/components/common/Button";
-import ReactSelect from "react-select";
-import {
-  PORTFOLIO_CATEGORIES,
-} from "@/constants/data/portfolio";
-import convert from "url-slug";
-import MinimalEditor from "@/components/editor/MinimalistEditor";
+import { uploadFile, deleteFile } from "@/services/supabase/fileHandler";
+import { PORTFOLIO_CATEGORIES } from "@/constants/data/portfolio";
 
-// MDEditorPreview untuk preview
-const MDEditorPreview = dynamic(
-  () => import("@uiw/react-markdown-preview").then((mod) => mod.default),
-  { ssr: false }
-);
-const PortfolioForm = ({ initialData, action, skills }) => {
-  const [content, setContent] = useState(
-    initialData?.content || "**Hello world!!!**"
-  );
-  const [selected, setSelected] = useState(initialData?.skill || []);
-  const [thumbnailFile, setThumbnailFile] = useState(null);
+const PortfolioForm = ({ initialData = {}, action, skills }) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [preview, setPreview] = useState(initialData?.photos || "");
+  const [content, setContent] = useState(initialData?.content || "");
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm({
-    defaultValues: initialData || {},
-  });
-  const [Loading, setLoading] = useState(false);
+    control,
+    reset,
+  } = useForm();
 
-  // Map skills untuk ReactSelect
-  const mappedSkills = skills.map((item) => ({
-    value: item.id,
-    label: item.name,
+const mapSkillValue = () => {
+  if (!initialData?.skill || !skills?.length) return [];
+
+  return skills
+    .filter((s) => initialData.skill.includes(s.id))
+    .map((s) => ({
+      value: s.id,
+      label: s.name, // 🔥 INI YANG DI-RENDER
+    }));
+};
+
+
+useEffect(() => {
+  if (action === "update" && initialData?.id) {
+    reset({
+      ...initialData,
+      skill: mapSkillValue(), // ✅ format react-select
+    });
+
+    setContent(initialData?.content || "");
+    setPreview(initialData?.photos || "");
+  }
+}, [initialData, action, skills, reset]);
+
+
+
+  const skillOptions = skills.map((s) => ({
+    value: s.id,
+    label: s.name,
   }));
 
-  // Set default skill values saat initialData berubah
-  useEffect(() => {
-    if (!initialData) return;
+  const handleThumbnailChange = (file) => {
+    setThumbnailFile(file);
+    setPreview(URL.createObjectURL(file));
+  };
 
-    setValue("name", initialData.name);
-    setValue("order", initialData.order);
-    setValue("category", initialData.category);
-
-    setContent(initialData.content || "");
-    setValue("content", initialData.content || "");
-  }, [initialData, setValue]);
-
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) setThumbnailFile(file);
+  const handleRemoveThumbnail = () => {
+    setThumbnailFile(null);
+    setPreview("");
   };
 
   const onSubmit = async (data) => {
     try {
       setLoading(true);
 
-      // Assign skill dan content
-      data.skill = selected;
-      data.content = content;
-      data.slug = convert(data.name);
+      let payload = {
+        ...data,
+        content,
+        slug: convert(data.name),
+        skill: data.skill?.map((s) => s.value) ?? [],
+      };
 
-      // Upload / update thumbnail
+      // Thumbnail
       if (thumbnailFile) {
-        if (initialData?.thumbnail) await deleteFile(initialData.thumbnail);
-        data.thumbnail = await uploadFile(thumbnailFile, "portfolio/");
-      } else if (initialData?.thumbnail) {
-        data.thumbnail = initialData.thumbnail;
+        if (initialData?.photos) await deleteFile(initialData.photos);
+        const uploaded = await uploadFile(thumbnailFile, "portfolio/");
+        payload.photos = uploaded.url;
       } else {
-        data.thumbnail = "";
+        payload.photos = initialData?.photos ?? "";
       }
 
-      // Save to Firebase
-      const { success, error } =
+      const result =
         action === "create"
-          ? await addDocument("portfolio", data)
-          : await updateDocument("portfolio", initialData.id, data);
+          ? await addDocument("portfolio", payload)
+          : await updateDocument("portfolio", initialData.id, payload);
 
-      if (success) {
+      if (result?.success) {
         toast.success(
-          `Portfolio ${
-            action === "create" ? "created" : "updated"
-          } successfully`
+          action === "create" ? "Created successfully" : "Updated successfully"
         );
         router.push("/portfolio");
       } else {
-        toast.error(
-          `Failed to ${action === "create" ? "create" : "update"} portfolio`
-        );
-        console.error(error);
+        toast.error("Failed to save data");
       }
     } catch (err) {
       console.error(err);
@@ -107,96 +112,63 @@ const PortfolioForm = ({ initialData, action, skills }) => {
   };
 
   return (
-    <div className="card p-2">
+    <div className="card p-4">
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* NAME */}
         <div className="mb-4">
-          <Label htmlFor="name" value="Name" />
-          <TextInput id="name" {...register("name", { required: true })} />
-          {errors.name && (
-            <span className="text-sm">This field is required</span>
-          )}
+          <Label value="Name" />
+          <TextInput {...register("name", { required: true })} />
         </div>
 
-        <div className="mb-4">
-          <Label htmlFor="thumbnail" value="Thumbnail" />
-          {initialData?.thumbnail && !thumbnailFile && (
-            <div className="mb-2">
-              <img
-                src={initialData.thumbnail}
-                alt="thumbnail"
-                className="w-32 h-32 object-cover"
-              />
-            </div>
-          )}
-          <FileInput
-            accept=".png,.jpg,.jpeg,.webp"
-            onChange={handleFileChange}
+        {/* THUMBNAIL */}
+        <div className="mb-6">
+          <Label value="Thumbnail" />
+          <ImageUploadPreview
+            value={preview}
+            onChange={handleThumbnailChange}
+            onRemove={handleRemoveThumbnail}
           />
-          {errors.thumbnail && (
-            <span className="text-sm">This field is required</span>
-          )}
         </div>
 
+        {/* ORDER */}
         <div className="mb-4">
-          <Label htmlFor="order" value="Order" />
-          <TextInput id="order" {...register("order", { required: true })} />
-          {errors.order && (
-            <span className="text-sm">This field is required</span>
-          )}
+          <Label value="Order" />
+          <TextInput type="number" {...register("order")} />
         </div>
 
+        {/* CATEGORY */}
         <div className="mb-4">
-          <Label htmlFor="category" value="Category" />
-          <Select
-            {...register("category", { required: true })}
-            defaultValue={initialData?.category || ""}
-          >
-            <option value="" disabled hidden>
-              Choose category ...
-            </option>
-            {PORTFOLIO_CATEGORIES.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
+          <Label value="Category" />
+          <Select {...register("category")}>
+            <option value="">Choose category</option>
+            {PORTFOLIO_CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
               </option>
             ))}
           </Select>
-          {errors.category && (
-            <span className="text-sm">This field is required</span>
-          )}
         </div>
 
+        {/* CONTENT */}
         <div className="mb-6">
-          <Label htmlFor="content" value="Content" />
-          <MinimalEditor value={content} onChange={setContent} />
-          {errors.content && (
-            <span className="text-sm">This field is required</span>
-          )}
+          <Label value="Content" />
+          <TiptapEditor value={content} onChange={setContent} />
         </div>
-
-        {/* Realtime Preview */}
-        <div className="mt-4">
-          <Label value="Preview" />
-          <MDEditorPreview
-            source={content || ""}
-            className="md:p-4 rounded-lg border border-gray-200"
+        {/* SKILL */}
+        <div className="mb-6">
+          <Label value="Skill" />
+          <Controller
+            name="skill"
+            control={control}
+            render={({ field }) => (
+              <ReactSelect {...field} isMulti options={skillOptions} />
+            )}
           />
         </div>
 
-        <div className="mb-4">
-          <Label htmlFor="skill" value="Skill" />
-          <ReactSelect
-            isMulti
-            value={selected}
-            onChange={setSelected}
-            options={mappedSkills}
-          />
-        </div>
-
-        <div className="flex justify-end">
-          <Button isLoading={Loading} type="submit" className="!w-full">
-            Save
-          </Button>
-        </div>
+        <Button isLoading={loading} type="submit" className="w-full">
+          Save
+        </Button>
       </form>
     </div>
   );
