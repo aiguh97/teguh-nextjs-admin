@@ -1,18 +1,29 @@
 import firebase_app from "@/services/firebase/config";
 import { getFile } from "@/services/supabase/fileHandler";
-import { getDocs, collection, getFirestore } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  getFirestore,
+  query,
+  orderBy
+} from "firebase/firestore";
 
 const db = getFirestore(firebase_app);
 
 export default async function handler(req, res) {
   try {
-    // Ambil semua dokumen dari collection 'portfolio'
-    const querySnapshot = await getDocs(collection(db, "portfolio"));
+    // Query dengan order by created_at (desc = terbaru dulu)
+    const q = query(
+      collection(db, "portfolio"),
+      orderBy("created_at", "desc")
+    );
+
+    const querySnapshot = await getDocs(q);
+
     const data = await Promise.all(
       querySnapshot.docs.map(async (doc) => {
         const docData = doc.data();
 
-        // Ambil URL thumbnail dari Firebase Storage
         let thumbnailURL = "";
         if (docData.thumbnail) {
           try {
@@ -25,6 +36,7 @@ export default async function handler(req, res) {
         return {
           id: doc.id,
           ...docData,
+          thumbnailURL,
         };
       })
     );
