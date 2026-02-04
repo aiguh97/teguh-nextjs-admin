@@ -12,10 +12,10 @@ const db = getFirestore(firebase_app);
 
 export default async function handler(req, res) {
   try {
-    // Query dengan order by created_at (desc = terbaru dulu)
+    // 🔥 Order by updated_at
     const q = query(
       collection(db, "portfolio"),
-      orderBy("created_at", "asc")
+      orderBy("updated_at", "desc") // terbaru di atas
     );
 
     const querySnapshot = await getDocs(q);
