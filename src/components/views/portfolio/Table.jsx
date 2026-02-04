@@ -7,6 +7,16 @@ import PopupModal from '@/components/elements/PopupModal';
 import ButtonActionColumn from '@/components/elements/ButtonActionColumn';
 import { deleteFile } from '@/services/supabase/fileHandler';
 
+
+const formatDate = (timestamp) => {
+  if (!timestamp?.seconds) return "-";
+  return new Date(timestamp.seconds * 1000).toLocaleString("id-ID", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+};
+
+
 const PortfolioTable = ({ data }) => {
   const [openModal, setOpenModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,21 +78,30 @@ const handleDelete = async (id) => {
         zxc
       <div className="overflow-x-auto bg-container relative scrollbar-hide overflow-y-hidden sm:rounded-lg card !p-2">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th className='px-6 py-4'>#</th>
-              <th className="px-6 py-3 whitespace-nowrap">Name</th>
-              <th className="px-6 py-3">Type</th>
-              <th className="px-6 py-3">Category</th>
-              <th className="px-6 py-3"><span className="sr-only">Edit</span></th>
-            </tr>
-          </thead>
+     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+  <tr>
+    <th className="px-6 py-4">#</th>
+    <th className="px-6 py-3 whitespace-nowrap">Name</th>
+    <th className="px-6 py-3">Category</th>
+    <th className="px-6 py-3">Created At</th>
+    <th className="px-6 py-3">Updated At</th>
+    <th className="px-6 py-3">
+      <span className="sr-only">Action</span>
+    </th>
+  </tr>
+</thead>
+
           <tbody>
             {visibleData.map((item, index) => (
               <tr key={item.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <td className='px-6 py-4'>{order++}</td>
                 <td className="flex gap-2 px-6 py-4">{item.name}</td>
-                <td className="px-6 py-4">{item.type}</td>
+                <td className="px-6 py-4">
+        {formatDate(item.created_at)}
+      </td>
+      <td className="px-6 py-4">
+        {formatDate(item.updated_at)}
+      </td>
                 <td className="px-6 py-4">{item.category}</td>
                 <td className="px-6 py-4 text-right flex gap-1 justify-end">
                   <ButtonActionColumn

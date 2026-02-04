@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     // 🔥 Order by updated_at
     const q = query(
       collection(db, "portfolio"),
-      orderBy("updated_at", "desc") // terbaru di atas
+      orderBy("created_at", "asc") // terbaru di atas
     );
 
     const querySnapshot = await getDocs(q);
