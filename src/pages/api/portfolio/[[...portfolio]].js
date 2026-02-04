@@ -7,7 +7,7 @@ const db = getFirestore(firebase_app);
 export default async function handler(req, res) {
   try {
     // Ambil semua dokumen dari collection 'portfolio'
-    const querySnapshot = await getDocs(collection(db, "portfolio"));
+     const querySnapshot = await getDocs(collection(db, "portfolio").orderBy('created_at', 'asc').get());
     const data = await Promise.all(
       querySnapshot.docs.map(async (doc) => {
         const docData = doc.data();
